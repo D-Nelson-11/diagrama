@@ -33,6 +33,7 @@ export default function ActivityNode({ data }) {
         padding: '8px 11px',
         boxSizing: 'border-box',
         overflow: 'hidden',
+        position: 'relative',
         background: bg,
         border: `1.5px solid ${sel ? col.c : '#d1d5db'}`,
         borderLeft: `3px solid ${col.c}`,
@@ -41,8 +42,16 @@ export default function ActivityNode({ data }) {
         cursor: 'pointer',
         display: 'flex', alignItems: 'flex-start', gap: 8,
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        opacity: data.dimmed ? 0.14 : 1,
+        transition: 'opacity 0.2s',
       }}
     >
+      {data.step != null && (
+        <span style={{ position: 'absolute', bottom: 3, right: 7, fontSize: 8.5, fontWeight: 700, color: '#b3b9c6', lineHeight: 1 }}>
+          {data.step}
+        </span>
+      )}
+
       <Handle type="target" id="top"       position={Position.Top}    style={HS} />
       <Handle type="target" id="left-in"   position={Position.Left}   style={HS} />
       <Handle type="target" id="right-in"  position={Position.Right}  style={HS} />
