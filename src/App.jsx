@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import FlowDiagram from './components/FlowDiagram';
 import DetailPanel from './components/DetailPanel';
+import TimelinePage from './components/TimelinePage';
 import { SECTIONS } from './data/roadmapData';
 
 const SHEETS_API = import.meta.env.VITE_SHEETS_API_URL || '/api/sheets';
@@ -76,7 +77,11 @@ function mergeSheetData(base, data, allSnake = false) {
   return merged;
 }
 
+// Página activa según el hash de la URL (#/tiempo → línea de tiempo; lo demás → flujos)
+const pageFromHash = () => (window.location.hash === '#/tiempo' ? 'tiempo' : 'flujos');
+
 function App() {
+  const [page, setPage]           = useState(pageFromHash);
   const [selected, setSelected]   = useState(null);
   const [tabs, setTabs]           = useState([]);
   const [activeTab, setActiveTab] = useState(null);
@@ -160,7 +165,17 @@ function App() {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { if (apiKey) loadTabs(); }, [apiKey, loadTabs]);
 
+  // Navegación entre páginas vía hash (funciona en GitHub Pages sin router)
+  useEffect(() => {
+    const onHash = () => setPage(pageFromHash());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
   const activeDef = tabs.find(t => t.key === activeTab);
+
+  // ── Página de línea de tiempo (datos estáticos, no requiere clave) ──
+  if (page === 'tiempo') return <TimelinePage />;
 
   // ── Pantalla de clave de acceso ──
   if (!apiKey) {
@@ -218,6 +233,13 @@ function App() {
           ))}
         </div>
         <div className="header-right">
+          <button
+            className="sync-btn"
+            onClick={() => { window.location.hash = '#/tiempo'; }}
+            title="Línea de tiempo del proceso"
+          >
+            ◷ Línea de tiempo
+          </button>
           <span className="header-tag">Flujo operativo · Importaciones</span>
           <button
             className="sync-btn"

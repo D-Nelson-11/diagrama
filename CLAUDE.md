@@ -33,8 +33,8 @@ Diagram structure lives in `src/data/roadmapData.js` — the `SECTIONS` array (s
 **Dynamic sections (items come from Google Sheets) — AUTO-GENERATED:**
 - Any `## Name` marker in a sheet creates its section automatically: id = slug of the name (`slugify` in the backend parser), label = the name, color cycles `AUTO_COLORS`, sheet order = diagram order, first section becomes the snake anchor if none exists.
 - NO code changes needed to add a section to a sheet. `SECTION_MAP` in the backend parser only pins legacy ids for the proceso sheet (`Torre` → `torre1`, etc.).
-- To customize an auto section (subtitle, color, layout): add an entry with the same id to the tab's base array in `roadmapData.js` (e.g. `MARITIMO_SECTIONS`) — base metadata wins, items still come from the sheet. Base sections render first (leftmost), then sheet-only sections in sheet order.
-- Tab `proceso` base: `SECTIONS` (includes static `Entradas`/`Configuracion` + the 6 sheet sections). Tab `maritimo` base: `MARITIMO_SECTIONS` (empty — fully auto).
+- To customize an auto section (subtitle, color, layout): give the tab a `base` array in `TAB_OVERRIDES` (`App.jsx`) with an entry matching the section id — base metadata wins, items still come from the sheet. Base sections render first (leftmost), then sheet-only sections in sheet order.
+- Only the legacy `Flujo de proceso` tab has a base (`SECTIONS` in `roadmapData.js`: static `Entradas`/`Configuracion` + the 6 legacy sheet sections). All other tabs are fully auto (`base: []`).
 
 **Item types inside a section's `items` array:**
 - `{ type: 'activity', id, concurrencia, actividad, sistema, modulo, info, metodo, identificacion, seguimiento, highlight }`
@@ -79,6 +79,14 @@ Diagram structure lives in `src/data/roadmapData.js` — the `SECTIONS` array (s
 **Branch path distribution.** Paths are distributed by their REAL width (`pathWidth`): if they fit in the grid they stretch to fill it, otherwise they pack with a minimum gap, centered, and may stick out of the grid — `computeLayout()` sizes each section by its actual bounds so neighbors never overlap.
 
 **Mini-snakes in paths are DISABLED.** Paths (rutas/sub-rutas) always render as vertical columns. The 2-column serpentine mechanism still exists behind `PATH_SNAKE_MIN` in `computeLayout.js` (set to `Infinity`; set a number like 4 to re-enable).
+
+## UI features
+
+- **Side panel tabs** (`DetailPanel.jsx`): `Resumen` (stats of the active flow) / `Detalle` (selected card). Selecting a card auto-switches to Detalle; state lives in App (`panelView`).
+- **Sistema filter**: clicking a system in the Resumen DIMS non-matching activity cards (opacity, `dimmed` flag in `FlowDiagram.jsx`) — it does not remove nodes, so the layout stays intact. State: `sistemaFilter` in App, cleared on tab switch.
+- **Draggable nodes**: positions persist in `localStorage` per tab (`flow-positions:<tabKey>`, saved on drag stop). The "⟲ Restaurar posiciones" button (top-right Panel) clears them. Layout recomputes preserve manual positions by node id.
+- **Visuals**: per-section background band (`SectionBgNode`, sized from real bounds in `computeLayout()`, pad `BG_PAD_SNAKE`/`BG_PAD_VCOL`), step number per main-sequence card (`data.step`), MiniMap bottom-left, canvas color `--canvas` in `index.css`.
+- **Access key gate**: see Google Sheets integration above.
 
 ## Edge system
 
