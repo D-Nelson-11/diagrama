@@ -78,7 +78,18 @@ const pathCols = (p) => {
 };
 const pathWidth = (p) => {
   const c = pathCols(p);
-  return c * CELL_W + (c - 1) * GAP_X;
+  let w = c * CELL_W + (c - 1) * GAP_X;
+  // Una sub-rama dentro de la ruta se abre en abanico: su ancho real es la suma
+  // de los anchos de sus sub-rutas. Hay que reservar ese espacio o la ruta se
+  // superpone con la ruta hermana de al lado.
+  for (const act of p.activities) {
+    if (act.type === 'branch') {
+      const subWidths = act.paths.map(pathWidth);
+      const spread = subWidths.reduce((a, b) => a + b, 0) + (act.paths.length - 1) * PATH_GAP;
+      w = Math.max(w, spread);
+    }
+  }
+  return w;
 };
 
 function renderPath(path, x, startY, fromId, section, nodes, edges, color = section.color, labelColor = null) {
