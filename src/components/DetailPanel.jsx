@@ -143,6 +143,12 @@ function CardDetail({ selected, sections }) {
         <h3 className="detail-title">{selected.actividad}</h3>
 
         <div className="detail-fields">
+          {selected.responsable && (
+            <div className="detail-field">
+              <span className="detail-field-label">Responsable</span>
+              <span className="detail-field-value" style={{ color: '#6d28d9', fontWeight: 500 }}>{selected.responsable}</span>
+            </div>
+          )}
           {selected.sistema && (
             <div className="detail-field">
               <span className="detail-field-label">Sistema</span>

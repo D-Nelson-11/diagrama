@@ -78,8 +78,13 @@ export default function ActivityNode({ data }) {
             {item.concurrencia}
           </span>
         </div>
-        {(item.metodo || item.identificacion || item.seguimiento) && (
+        {(item.metodo || item.identificacion || item.seguimiento || item.responsable) && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginTop: 3 }}>
+            {item.responsable && (
+              <span style={{ fontSize: 8, padding: '1px 4px', borderRadius: 3, background: '#f5f3ff', color: '#6d28d9', border: '1px solid #ddd6fe', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 110 }}>
+                {item.responsable}
+              </span>
+            )}
             {item.metodo && (
               <span style={{ fontSize: 8, padding: '1px 4px', borderRadius: 3, background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', whiteSpace: 'nowrap' }}>
                 {item.metodo}
