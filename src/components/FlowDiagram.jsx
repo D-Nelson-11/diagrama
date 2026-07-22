@@ -24,7 +24,7 @@ const miniMapColor = (n) => {
   return '#d1d5db';
 };
 
-export default function FlowDiagram({ onSelect, selectedId, sections = DEFAULT_SECTIONS, tab = 'default', sistemaFilter = null }) {
+export default function FlowDiagram({ onSelect, selectedId, sections = DEFAULT_SECTIONS, tab = 'default', sistemaFilter = null, responsableFilter = null }) {
   const [collapsed, setCollapsed] = useState(new Set());
 
   // Posiciones movidas a mano, persistidas en localStorage por pestaña
@@ -55,12 +55,14 @@ export default function FlowDiagram({ onSelect, selectedId, sections = DEFAULT_S
         onSelect,
         selectedId,
         onToggle: n.data.sectionId ? () => toggleCollapse(n.data.sectionId) : undefined,
-        // Filtro por sistema: atenúa las actividades que no coinciden
-        dimmed: !!sistemaFilter && n.type === 'activity' &&
-                (n.data.item?.sistema || '').trim() !== sistemaFilter,
+        // Filtro por sistema/responsable: atenúa las actividades que no coinciden
+        dimmed: n.type === 'activity' && (
+          (!!sistemaFilter && (n.data.item?.sistema || '').trim() !== sistemaFilter) ||
+          (!!responsableFilter && (n.data.item?.responsable || '').trim() !== responsableFilter)
+        ),
       },
     })),
-    [layout, onSelect, selectedId, toggleCollapse, sistemaFilter]
+    [layout, onSelect, selectedId, toggleCollapse, sistemaFilter, responsableFilter]
   );
 
   // React Flow maneja el drag internamente; al recalcular el layout se

@@ -88,6 +88,7 @@ function App() {
   const [syncError, setSyncError] = useState(null);
   const [panelView, setPanelView] = useState('resumen');  // tab del panel lateral
   const [sistemaFilter, setSistemaFilter] = useState(null);  // atenúa actividades de otros sistemas
+  const [responsableFilter, setResponsableFilter] = useState(null);  // atenúa actividades de otros responsables
   // Clave de acceso: el backend la exige (x-api-key); se guarda en el navegador
   const [apiKey, setApiKey]     = useState(() => localStorage.getItem(API_KEY_STORAGE) || '');
   const [keyInput, setKeyInput] = useState('');
@@ -155,6 +156,7 @@ function App() {
     setSelected(null);
     setPanelView('resumen');
     setSistemaFilter(null);
+    setResponsableFilter(null);
     setSyncError(null);
     if (!loadedTabs.current.has(tabDef.key)) handleSync(tabDef);
   }, [activeTab, handleSync]);
@@ -259,6 +261,7 @@ function App() {
               selectedId={selected?.id}
               sections={sectionsByTab[activeTab] ?? activeDef.base}
               sistemaFilter={sistemaFilter}
+              responsableFilter={responsableFilter}
             />
           )}
         </div>
@@ -270,6 +273,8 @@ function App() {
             onViewChange={setPanelView}
             sistemaFilter={sistemaFilter}
             onSistemaFilter={setSistemaFilter}
+            responsableFilter={responsableFilter}
+            onResponsableFilter={setResponsableFilter}
           />
         </div>
       </div>

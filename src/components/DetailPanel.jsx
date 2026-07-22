@@ -40,7 +40,7 @@ function StatCard({ label, value, color = '#6b7280', bg = '#f9fafb' }) {
   );
 }
 
-function StatsPanel({ sections, sistemaFilter, onSistemaFilter }) {
+function StatsPanel({ sections, sistemaFilter, onSistemaFilter, responsableFilter, onResponsableFilter }) {
   const all = getAllActivities(sections);
   const total = all.length;
 
@@ -51,6 +51,14 @@ function StatsPanel({ sections, sistemaFilter, onSistemaFilter }) {
     if (s) porSistema[s] = (porSistema[s] || 0) + 1;
   }
   const sistemas = Object.entries(porSistema).sort((a, b) => b[1] - a[1]);
+
+  // Conteo por responsable (normalizado con trim), de mayor a menor
+  const porResponsable = {};
+  for (const a of all) {
+    const r = (a.responsable || '').trim();
+    if (r) porResponsable[r] = (porResponsable[r] || 0) + 1;
+  }
+  const responsables = Object.entries(porResponsable).sort((a, b) => b[1] - a[1]);
   const manual      = all.filter(a => a.metodo === 'Manual').length;
   const esperas     = all.filter(a => a.identificacion?.includes('Esperas')).length;
   const reprocesos  = all.filter(a => a.identificacion?.includes('Reprocesos')).length;
@@ -101,6 +109,38 @@ function StatsPanel({ sections, sistemaFilter, onSistemaFilter }) {
           );
         })}
       </div>
+
+      {responsables.length > 0 && (
+        <>
+          <div style={S}>Responsable</div>
+          <div style={{ fontSize: 10, color: '#9ca3af', marginBottom: 6 }}>
+            Clic en un responsable para filtrarlo en el diagrama; clic de nuevo para quitar el filtro.
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {responsables.map(([name, count]) => {
+              const active = responsableFilter === name;
+              return (
+                <button
+                  key={name}
+                  onClick={() => onResponsableFilter?.(active ? null : name)}
+                  style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '7px 10px', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit',
+                    background: active ? '#f5f3ff' : '#f9fafb',
+                    border: `1px solid ${active ? '#c4b5fd' : '#e5e7eb'}`,
+                    transition: 'background 0.15s, border-color 0.15s',
+                  }}
+                >
+                  <span style={{ fontSize: 11, color: active ? '#6d28d9' : '#374151', fontWeight: active ? 600 : 400, textAlign: 'left' }}>
+                    {name}
+                  </span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: active ? '#6d28d9' : '#6b7280' }}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       <div style={S}>Identificación</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
@@ -218,7 +258,7 @@ const panelTabStyle = (active) => ({
   transition: 'background 0.15s, color 0.15s',
 });
 
-export default function DetailPanel({ selected, sections = [], view = 'resumen', onViewChange, sistemaFilter = null, onSistemaFilter }) {
+export default function DetailPanel({ selected, sections = [], view = 'resumen', onViewChange, sistemaFilter = null, onSistemaFilter, responsableFilter = null, onResponsableFilter }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ display: 'flex', gap: 5, padding: '10px 12px', borderBottom: '1px solid #e2e5ec', flexShrink: 0 }}>
@@ -231,7 +271,7 @@ export default function DetailPanel({ selected, sections = [], view = 'resumen',
       </div>
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {view === 'resumen' ? (
-          <StatsPanel sections={sections} sistemaFilter={sistemaFilter} onSistemaFilter={onSistemaFilter} />
+          <StatsPanel sections={sections} sistemaFilter={sistemaFilter} onSistemaFilter={onSistemaFilter} responsableFilter={responsableFilter} onResponsableFilter={onResponsableFilter} />
         ) : selected ? (
           <CardDetail selected={selected} sections={sections} />
         ) : (
