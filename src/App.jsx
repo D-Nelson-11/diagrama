@@ -19,9 +19,6 @@ const TAB_OVERRIDES = {
     base: SECTIONS,        // incluye las secciones estáticas Entradas/Configuracion
     allSnake: false,       // layout legacy: torre1 snake + columnas verticales
   },
-  'Flujo de proceso Terestre': { label: 'Flujo de Torre Terrestre' },
-  'Flujo de proceso Maritimo': { label: 'Flujo Marítimo' },
-  'Flujo de proceso Maritimo': { label: 'Flujo Marítimo' },
 };
 
 // 'Flujo de proceso Terestre' → 'flujo_de_proceso_terestre' (key estable por tab)
