@@ -66,18 +66,10 @@ export const SECTIONS = [
     items: []
   },
   {
-    id: 'ActividadesSiempre',
-    label: 'Actividades del proceso',
-    subtitle: 'Actividades durante el proceso',
-    phase: 7,
-    color: 'orange',
-    items: []
-  },
-  {
     id: 'Reporteria',
     label: 'Salida',
     subtitle: 'Control y seguimiento',
-    phase: 8,
+    phase: 7,
     color: 'teal',
     items: []
   },
