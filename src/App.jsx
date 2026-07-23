@@ -4,7 +4,7 @@ import DetailPanel from './components/DetailPanel';
 import TimelinePage from './components/TimelinePage';
 import { SECTIONS } from './data/roadmapData';
 
-const SHEETS_API = import.meta.env.VITE_SHEETS_API_URL || '/api/sheets';
+const SHEETS_API = 'https://vestadnelsonmbackend-fhgcfkepexh8f6ff.centralus-01.azurewebsites.net/api/flujo-sheets';
 const API_KEY_STORAGE = 'flujo-api-key';
 
 // Las tabs se descubren solas: el backend lista las pestañas de los spreadsheets
